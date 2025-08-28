@@ -19,10 +19,11 @@ EBTNodeResult::Type UBTTask_FindPatrolPosition::ExecuteTask(UBehaviorTreeCompone
 	if (nullptr == ControllingPawn)
 		return EBTNodeResult::Failed;
 
-	FVector NextPatrolPosition = FMath::VRand() * FMath::FRandRange(0.0f, PatrolRadius);
+	FVector ControllingPawnLocation = ControllingPawn->GetActorLocation();
+	FVector NextPatrolPosition = ControllingPawnLocation + FMath::VRand() * FMath::FRandRange(0.0f, PatrolRadius);
 
 	FHitResult Result;
-	if (GetWorld()->LineTraceSingleByChannel(Result, ControllingPawn->GetActorLocation(), NextPatrolPosition, ECC_GameTraceChannel2))
+	if (GetWorld()->LineTraceSingleByChannel(Result, ControllingPawnLocation, NextPatrolPosition, ECC_GameTraceChannel2))
 	{
 		NextPatrolPosition = Result.Location;
 	}

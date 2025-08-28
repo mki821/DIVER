@@ -6,7 +6,7 @@
 
 // 아이템 종류
 UENUM(BlueprintType)
-enum class EItemType : uint8
+enum class EItemCategory : uint8
 {
 	Consumable	UMETA(DisplayName = "Consumable"),
 	Upgrade		UMETA(DisplayName = "Upgrade")
@@ -28,31 +28,31 @@ struct FShopItemData : public FTableRowBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText ItemName;
+	FName ItemID;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FText ItemDescription;
+	FText ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSoftObjectPtr<UTexture2D> ItemIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	EItemType ItemType;
+	EItemCategory ItemCategory;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int32 Price;
 
-	// - 소모품 전용 데이터 -
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemType == EItemType::Consumable"))
+	// -소모품 데이터-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemCategory == EItemCategory::Consumable"))
 	float HealthToRestore;
 
-	// - 업그레이드 전용 데이터 -
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemType == EItemType::Upgrade"))
+	// -업그레이드 데이터-
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemCategory == EItemCategory::Upgrade"))
 	EUpgradeType UpgradeType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemType == EItemType::Upgrade"))
-	float UpgradeValue;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemCategory == EItemCategory::Upgrade"))
+	float UpgradeValuePerLevel;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemType == EItemType::Upgrade"))
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (EditCondition = "ItemCategory == EItemCategory::Upgrade"))
 	int32 MaxLevel;
 };

@@ -16,7 +16,8 @@ public class DIVER : ModuleRules
 			"Engine", 
 			"InputCore", 
 			"EnhancedInput",
-			"UMG"
+			"UMG",
+			"AIModule"
 		});
 	}
 }

@@ -86,12 +86,14 @@ void UShopWidget::PopulateSellList()
 
 void UShopWidget::OnUpgradeTabClicked()
 {
-	if (TabSwitcher) TabSwitcher->SetActiveWidget(UpgradeList);
+	if (TabSwitcher) 
+		TabSwitcher->SetActiveWidget(UpgradeList);
 }
 
 void UShopWidget::OnBuyTabClicked()
 {
-	if (TabSwitcher) TabSwitcher->SetActiveWidget(BuyList);
+	if (TabSwitcher) 
+		TabSwitcher->SetActiveWidget(BuyList);
 }
 
 void UShopWidget::OnSellTabClicked()

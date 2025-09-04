@@ -4,8 +4,8 @@
 #include "Engine/DataTable.h"
 #include "FishData.generated.h"
 
-UCLASS()
-class DIVER_API UFishData : public UDataTable
+USTRUCT(BlueprintType)
+struct FFishData : public FTableRowBase
 {
 	GENERATED_BODY()
 	

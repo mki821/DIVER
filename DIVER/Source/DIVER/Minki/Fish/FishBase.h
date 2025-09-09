@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Minki/GameData/FishStat.h"
 #include "FishBase.generated.h"
 
 UCLASS()
@@ -17,11 +18,20 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+public:
+	void Initialize();
+
+public:
+	void SetFishData(TObjectPtr<UFishStat> NewFishData) { FishData = NewFishData; }
+
 protected:
 	UPROPERTY(EditAnywhere, Category = Fish)
 	TObjectPtr<class UFishStat> FishData;
 
 protected:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<class UCapsuleComponent> Capsule;
+
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<class USkeletalMeshComponent> Mesh;
 };

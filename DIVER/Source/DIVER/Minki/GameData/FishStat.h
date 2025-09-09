@@ -30,6 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, Category = Fish)
 	TSubclassOf<class UFishAnimInstance> FishAnimInstance;
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swim)
+	float MinHeight = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swim)
+	float MaxHeight = 0.0f;
+
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float MaxHp = 0.0f;
 

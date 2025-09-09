@@ -23,7 +23,10 @@ EBTNodeResult::Type UBTTask_FindPatrolPosition::ExecuteTask(UBehaviorTreeCompone
 	FVector NextPatrolPosition = ControllingPawnLocation + FMath::VRand() * FMath::FRandRange(0.0f, PatrolRadius);
 
 	FHitResult Result;
-	if (GetWorld()->LineTraceSingleByChannel(Result, ControllingPawnLocation, NextPatrolPosition, ECC_GameTraceChannel2))
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(ControllingPawn);
+
+	if (GetWorld()->LineTraceSingleByChannel(Result, ControllingPawnLocation, NextPatrolPosition, ECC_GameTraceChannel2, Params))
 	{
 		NextPatrolPosition = Result.Location;
 	}

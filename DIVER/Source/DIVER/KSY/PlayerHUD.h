@@ -4,10 +4,6 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUD.generated.h"
 
-/**
- * 플레이어 HP, 산소량 표시하는 UI 업데이트
- */
-
 class UProgressBar;
 class UTextBlock;
 

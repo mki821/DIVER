@@ -5,6 +5,7 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Minki/GameData/FishStat.h"
 #include "Minki/AI/FishAIController.h"
+#include "Minki/Animation/FishAnimInstance.h"
 
 AFishBase::AFishBase()
 {
@@ -23,9 +24,11 @@ void AFishBase::BeginPlay()
 	Super::BeginPlay();
 
 	Mesh->SetSkeletalMesh(FishData->FishMesh);
+	Mesh->SetAnimInstanceClass(FishData->FishAnimInstance);
 
-	
-
-	AIControllerClass = FishData->FishController;
-	Cast<AController>(AIControllerClass->GetDefaultObject())->Possess(this);
+	AFishAIController* FishController = GetWorld()->SpawnActor<AFishAIController>(FishData->FishController);
+	if (FishController)
+	{
+		FishController->Possess(this);
+	}
 }

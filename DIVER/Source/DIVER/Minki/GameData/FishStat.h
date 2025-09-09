@@ -31,11 +31,11 @@ public:
 	TSubclassOf<class UFishAnimInstance> FishAnimInstance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
-	float MaxHp;
+	float MaxHp = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
-	float Attack;
+	float Attack = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
-	float MovementSpeed;
+	float MovementSpeed = 0.0f;
 };

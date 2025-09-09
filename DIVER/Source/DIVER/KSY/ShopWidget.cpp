@@ -25,7 +25,8 @@ void UShopWidget::NativeConstruct()
 
 void UShopWidget::PopulateShopLists()
 {
-	if (!ShopItemDataTable || !UpgradeList || !BuyList || !ItemEntryWidgetClass) return;
+	if (!ShopItemDataTable || !UpgradeList || !BuyList || !ItemEntryWidgetClass) 
+		return;
 
 	UpgradeList->ClearChildren();
 	BuyList->ClearChildren();
@@ -37,13 +38,11 @@ void UShopWidget::PopulateShopLists()
 
 		if (ItemData)
 		{
-			// 아이템 슬롯 위젯을 생성
 			 UShopItemEntryWidget* Entry = CreateWidget<UShopItemEntryWidget>(this, ItemEntryWidgetClass);
 			 if (Entry)
 			 {
-			 	Entry->Setup(ItemData); // 슬롯에 데이터 전달
+			 	Entry->Setup(ItemData);
 			
-			 	// 아이템 카테고리에 따라 맞는 리스트에 추가
 			 	if (ItemData->ItemCategory == EItemCategory::Upgrade)
 			 	{
 			 		UpgradeList->AddChildToVerticalBox(Entry);
@@ -63,7 +62,7 @@ void UShopWidget::PopulateSellList()
 
 	SellList->ClearChildren();
 
-	// TODO: 플레이어 캐릭터로부터 물고기 인벤토리 정보를 가져
+	// TODO: 플레이어가 물고기를 잡으면 저장해두고 그 정보를 읽어와야함
 	// TMap<FName, int32> PlayerFishInventory = GetOwningPlayerPawn<AMyPlayer>()->GetFishInventory();
 	//
 	// for (const auto& FishPair : PlayerFishInventory)

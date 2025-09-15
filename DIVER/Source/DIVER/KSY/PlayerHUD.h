@@ -4,10 +4,6 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUD.generated.h"
 
-/**
- * 플레이어 HP, 산소량 표시하는 UI 업데이트
- */
-
 class UProgressBar;
 class UTextBlock;
 
@@ -17,6 +13,10 @@ class DIVER_API UPlayerHUD : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	virtual void NativeConstruct() override;
+
+	void UpdateCoinText(int32 NewCoins);
+
 	void UpdateHP(float NewHP);
 	void UpdateOxygen(float NewOxygen);
 
@@ -26,4 +26,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* OxygenBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CoinText;
 };

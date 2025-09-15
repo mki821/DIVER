@@ -22,8 +22,4 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
-protected:
-	UPROPERTY(EditAnywhere, Category= "EnhancedInput")
-	class UInputMappingContext* InputContext;
 };

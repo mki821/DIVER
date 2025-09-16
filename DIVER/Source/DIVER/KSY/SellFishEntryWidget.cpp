@@ -1,8 +1,8 @@
 #include "KSY/SellFishEntryWidget.h"
 #include "KSY/FishData.h"
 #include "KSY/DiverPlayerState.h" 
-// TODO: 아래 헤더는 실제 프로젝트의 플레이어 캐릭터 클래스로 변경
-// #include "DiverCharacter.h" 
+#include "YTH/Diver/DiverCharacter.h"
+#include "YTH/Diver/DiverPlayerController.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
@@ -51,8 +51,7 @@ void USellFishEntryWidget::OnSellButtonClicked()
 	if (!MyFishData) return;
 
 	ADiverPlayerState* PlayerState = GetOwningPlayer()->GetPlayerState<ADiverPlayerState>();
-	// TODO: 'ADiverCharacter'는 실제 플레이어 캐릭터 클래스 이름으로 변경
-	// ADiverCharacter* PlayerCharacter = GetOwningPlayerPawn<ADiverCharacter>();
+	ADiverCharacter* PlayerCharacter = GetOwningPlayerPawn<ADiverCharacter>();
 
 	if (!PlayerState /*|| !PlayerCharacter*/)
 	{

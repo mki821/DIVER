@@ -14,6 +14,7 @@ class DIVER_API UPlayerHUD : public UUserWidget
 	
 public:
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 	void UpdateCoinText(int32 NewCoins);
 
@@ -29,4 +30,6 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* CoinText;
+
+	bool bIsPlayerStateInitialized = false;
 };

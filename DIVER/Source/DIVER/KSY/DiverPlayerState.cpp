@@ -15,27 +15,17 @@ void ADiverPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 void ADiverPlayerState::AddCoins(int32 Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Add Coin"));
-
-	if (GetLocalRole() == ROLE_Authority)
-	{
-		CurrentCoins += Amount;
-		OnCoinsChanged.Broadcast(CurrentCoins);
-	}
+	CurrentCoins += Amount;
+	OnCoinsChanged.Broadcast(CurrentCoins);
 }
 
 bool ADiverPlayerState::RemoveCoins(int32 Amount)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Use Coin"));
-
-	if (GetLocalRole() == ROLE_Authority)
+	if (CurrentCoins >= Amount)
 	{
-		if (CurrentCoins >= Amount)
-		{
-			CurrentCoins -= Amount;
-			OnCoinsChanged.Broadcast(CurrentCoins);
-			return true;
-		}
+		CurrentCoins -= Amount;
+		OnCoinsChanged.Broadcast(CurrentCoins);
+		return true;
 	}
 	return false;
 }

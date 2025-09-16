@@ -57,7 +57,7 @@ void UShopItemEntryWidget::OnActionButtonClicked()
 	ADiverPlayerState* PlayerState = GetOwningPlayer()->GetPlayerState<ADiverPlayerState>();
 	ADiverCharacter* PlayerCharacter = GetOwningPlayerPawn<ADiverCharacter>();
 
-	if (!PlayerState || !PlayerCharacter*)
+	if (!PlayerState || PlayerCharacter == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("PlayerState or PlayerCharacter is not valid!"));
 		return;

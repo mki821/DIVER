@@ -14,4 +14,7 @@ class DIVER_API UFishAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
 	
+public:
+	UPROPERTY(BlueprintReadOnly)
+	bool IsChasing = false;
 };

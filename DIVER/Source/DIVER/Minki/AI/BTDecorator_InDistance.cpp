@@ -13,7 +13,7 @@ UBTDecorator_InDistance::UBTDecorator_InDistance()
 bool UBTDecorator_InDistance::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if (nullptr == ControllingPawn)
+	if (ControllingPawn == nullptr)
 		return false;
 
 	FVector PatrolPosition = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("PatrolPosition"));

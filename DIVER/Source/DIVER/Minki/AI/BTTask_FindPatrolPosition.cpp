@@ -16,14 +16,17 @@ EBTNodeResult::Type UBTTask_FindPatrolPosition::ExecuteTask(UBehaviorTreeCompone
 		return EBTNodeResult::Failed;
 
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if (nullptr == ControllingPawn)
+	if (ControllingPawn == nullptr)
 		return EBTNodeResult::Failed;
 
 	FVector ControllingPawnLocation = ControllingPawn->GetActorLocation();
 	FVector NextPatrolPosition = ControllingPawnLocation + FMath::VRand() * FMath::FRandRange(0.0f, PatrolRadius);
 
 	FHitResult Result;
-	if (GetWorld()->LineTraceSingleByChannel(Result, ControllingPawnLocation, NextPatrolPosition, ECC_GameTraceChannel2))
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(ControllingPawn);
+
+	if (GetWorld()->LineTraceSingleByChannel(Result, ControllingPawnLocation, NextPatrolPosition, ECC_GameTraceChannel2, Params))
 	{
 		NextPatrolPosition = Result.Location;
 	}

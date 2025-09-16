@@ -15,6 +15,10 @@ void UPlayerHUD::NativeConstruct()
 	}
 }
 
+void UPlayerHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
+{
+}
+
 void UPlayerHUD::UpdateCoinText(int32 NewCoins)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Update Coin Text"));

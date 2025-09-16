@@ -25,5 +25,10 @@ private:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = Fish)
+	int MaxSpawnFishCount = 0;
+
+	int CurrentSpawnFishCount = 0;
+	
+	UPROPERTY(EditAnywhere, Category = Fish)
 	TArray<TObjectPtr<class UFishStat>> FishData;
 };

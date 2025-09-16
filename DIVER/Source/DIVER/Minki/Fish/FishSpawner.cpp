@@ -20,9 +20,18 @@ void AFishSpawner::BeginPlay()
 
 void AFishSpawner::SpawnFish()
 {
+	if (CurrentSpawnFishCount >= MaxSpawnFishCount)
+	{
+		return;
+	}
+
+	++CurrentSpawnFishCount;
+
 	AFishBase* NewFish = GetWorld()->SpawnActor<AFishBase>();
 	NewFish->SetActorLocation(GetActorLocation());
 
 	NewFish->SetFishData(FishData[0]);
+	NewFish->DeadEvent.BindLambda([this]() { --CurrentSpawnFishCount; });
+
 	NewFish->Initialize();
 }

@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTask_FindPatrolPosition::ExecuteTask(UBehaviorTreeCompone
 		return EBTNodeResult::Failed;
 
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if (nullptr == ControllingPawn)
+	if (ControllingPawn == nullptr)
 		return EBTNodeResult::Failed;
 
 	FVector ControllingPawnLocation = ControllingPawn->GetActorLocation();

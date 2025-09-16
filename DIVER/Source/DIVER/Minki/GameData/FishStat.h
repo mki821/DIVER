@@ -21,14 +21,21 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Information)
 	FName Name;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Information)
+	FText Description;
+public:
+
 	UPROPERTY(EditAnywhere, Category = Fish)
 	TObjectPtr<class USkeletalMesh> FishMesh;
 
 	UPROPERTY(EditAnywhere, Category = Fish)
 	TSubclassOf<class AFishAIController> FishController;
 
-	UPROPERTY(EditAnywhere, Category = Fish)
+	UPROPERTY(EditAnywhere, Category = Animation)
 	TSubclassOf<class UFishAnimInstance> FishAnimInstance;
+
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> AttackMontage;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swim)
@@ -42,8 +49,14 @@ public:
 	float MaxHp = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+	float MovementSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float Attack = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
-	float MovementSpeed = 0.0f;
+	float AttackRadius = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+	float AttackRange = 0.0f;
 };

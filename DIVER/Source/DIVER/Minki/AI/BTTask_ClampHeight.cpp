@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTask_ClampHeight::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 
 	APawn* ControllingPawn = OwnerComp.GetAIOwner()->GetPawn();
-	if (nullptr == ControllingPawn)
+	if (ControllingPawn == nullptr)
 		return EBTNodeResult::Failed;
 
 	float MinHeight = OwnerComp.GetBlackboardComponent()->GetValueAsFloat(TEXT("MinHeight"));

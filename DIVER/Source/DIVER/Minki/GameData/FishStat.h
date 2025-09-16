@@ -52,6 +52,9 @@ public:
 	float MovementSpeed = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
+	float ChasingSpeed = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)
 	float Attack = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stat)

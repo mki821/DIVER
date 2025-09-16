@@ -36,6 +36,8 @@ public:
 
 public:
 	void SetFishData(TObjectPtr<UFishStat> NewFishData) { FishData = NewFishData; }
+	UFishStat* GetFishData() { return FishData; }
+
 	void SetChasing(bool IsChasing);
 
 public:

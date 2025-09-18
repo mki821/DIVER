@@ -27,7 +27,8 @@ void USellFishEntryWidget::Setup(const FFishData* FishData, int32 Quantity)
 
 	if (FishPriceText)
 	{
-		FishPriceText->SetText(FText::AsNumber(MyFishData->SellPrice));
+		FString TempString = FString::Printf(TEXT("Price : %d"), MyFishData->SellPrice);
+		FishPriceText->SetText(FText::FromString(TempString));
 	}
 
 	if (FishQuantityText)

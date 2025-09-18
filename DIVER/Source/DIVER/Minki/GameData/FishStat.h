@@ -37,6 +37,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Animation)
 	TObjectPtr<class UAnimMontage> AttackMontage;
 
+	UPROPERTY(EditAnywhere, Category = Animation)
+	TObjectPtr<class UAnimMontage> DeadMontage;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swim)
 	float MinHeight = 0.0f;

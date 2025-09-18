@@ -23,6 +23,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	void Dead();
+	void DeadEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded);
 
 public:
 	void Initialize();

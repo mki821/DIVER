@@ -30,7 +30,8 @@ void AFishSpawner::SpawnFish()
 	AFishBase* NewFish = GetWorld()->SpawnActor<AFishBase>();
 	NewFish->SetActorLocation(GetActorLocation());
 
-	NewFish->SetFishData(FishData[0]);
+	int index = FMath::RandRange(0, FishData.Num() - 1);
+	NewFish->SetFishData(FishData[index]);
 	NewFish->DeadEvent.BindLambda([this]() { --CurrentSpawnFishCount; });
 
 	NewFish->Initialize();

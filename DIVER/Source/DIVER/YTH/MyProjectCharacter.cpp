@@ -58,6 +58,28 @@ void AMyProjectCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void AMyProjectCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	if (!isBreathing)
+	{
+		CurrentOxygen -= OxygenDecrementRate * DeltaTime;
+		CurrentOxygen = FMath::Max(CurrentOxygen, 0.0f);
+		if (CurrentOxygen <= 0.0f)
+		{
+			// 사망처리나 피깍아야됨
+		}
+	}
+
+	if (CurrentOxygen <= MaxOxygen && isBreathing)
+	{
+		CurrentOxygen += OxygenIncrementRate * DeltaTime;
+		CurrentOxygen = FMath::Min(CurrentOxygen, MaxOxygen);
+	}
+}
+
+
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 
@@ -90,15 +112,36 @@ void AMyProjectCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
 
 void AMyProjectCharacter::Move(const FInputActionValue& Value)
 {
-	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
 	if (isSwimming)
 	{
-		const FRotator ControlRotation = Controller->GetControlRotation();
-		const FVector ForwardDirection = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
-        
-		AddMovementInput(ForwardDirection, MovementVector.Y);
+		if (Controller != nullptr)
+		{
+			const FRotator ControlRotation = Controller->GetControlRotation();
+            
+			// 카메라가 바라보는 방향으로 이동 벡터 계산
+			FVector CameraForward = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
+			FVector CameraRight = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y);
+            
+			// 이동 방향 계산 (전후/좌우 입력에 따라)
+			FVector MoveDirection = (CameraForward * MovementVector.Y) + (CameraRight * MovementVector.X);
+            
+			// 현재 위치 확인
+			FVector CurrentLocation = GetActorLocation();
+			bool bIsAtTop = CurrentLocation.Z >= 9600.0f;
+            
+			// 위쪽 제한 처리
+			if (bIsAtTop && MoveDirection.Z > 0)
+			{
+				// 위로 이동하려는 경우 Z 성분 제거 (수평 이동만 허용)
+				MoveDirection.Z = 0;
+				MoveDirection.Normalize(); // 방향 벡터 정규화
+			}
+            
+			// 이동 적용
+			AddMovementInput(MoveDirection, 1.0f);
+		}
 	}
 	else
 	{

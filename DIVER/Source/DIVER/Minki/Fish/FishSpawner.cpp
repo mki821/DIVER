@@ -28,9 +28,16 @@ void AFishSpawner::SpawnFish()
 	++CurrentSpawnFishCount;
 
 	AFishBase* NewFish = GetWorld()->SpawnActor<AFishBase>();
+	if (!NewFish)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed SpawnFish: SpawnActor returned nullptr"));
+		--CurrentSpawnFishCount;
+		return;
+	}
 	NewFish->SetActorLocation(GetActorLocation());
 
-	NewFish->SetFishData(FishData[0]);
+	int index = FMath::RandRange(0, FishData.Num() - 1);
+	NewFish->SetFishData(FishData[index]);
 	NewFish->DeadEvent.BindLambda([this]() { --CurrentSpawnFishCount; });
 
 	NewFish->Initialize();

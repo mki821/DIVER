@@ -9,6 +9,8 @@
 #include "Minki/Animation/FishAnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/DamageEvents.h"
+#include "AIController.h"
+#include "BrainComponent.h"
 
 AFishBase::AFishBase()
 {
@@ -34,6 +36,28 @@ void AFishBase::BeginPlay()
 
 void AFishBase::Dead()
 {
+	AAIController* AIController = Cast<AAIController>(GetController());
+	if (AIController && AIController->BrainComponent)
+	{
+		AIController->BrainComponent->StopLogic(TEXT("Dead"));
+	}
+
+	UAnimInstance* AnimInstance = Mesh->GetAnimInstance();
+	UAnimMontage* DeadMontage = FishData->DeadMontage;
+
+	if (AnimInstance && DeadMontage)
+	{
+		AnimInstance->Montage_Play(DeadMontage);
+
+		FOnMontageEnded EndDelegate;
+		EndDelegate.BindUObject(this, &AFishBase::DeadEnd);
+		AnimInstance->Montage_SetEndDelegate(EndDelegate, DeadMontage);
+	}
+}
+
+void AFishBase::DeadEnd(UAnimMontage* TargetMontage, bool IsProperlyEnded)
+{
+	DeadEvent.ExecuteIfBound();
 	Destroy();
 }
 

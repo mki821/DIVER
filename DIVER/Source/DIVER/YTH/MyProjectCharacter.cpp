@@ -11,7 +11,6 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-// AMyProjectCharacter
 
 AMyProjectCharacter::AMyProjectCharacter()
 {
@@ -36,21 +35,22 @@ AMyProjectCharacter::AMyProjectCharacter()
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
 
-	// Create a camera boom (pulls in towards the player if there is a collision)
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
-	CameraBoom->SetupAttachment(RootComponent);
-	CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
-	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
+	// // // Create a camera boom (pulls in towards the player if there is a collision)
+	// CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	// CameraBoom->SetupAttachment(RootComponent);
+	// CameraBoom->TargetArmLength = 400.0f; // The camera follows at this distance behind the character	
+	// CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
 
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
+	FollowCamera->SetupAttachment(GetMesh(), TEXT("head"));
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
+
 
 void AMyProjectCharacter::BeginPlay()
 {
@@ -77,7 +77,6 @@ void AMyProjectCharacter::Tick(float DeltaTime)
 		CurrentOxygen = FMath::Min(CurrentOxygen, MaxOxygen);
 	}
 }
-
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -119,18 +118,18 @@ void AMyProjectCharacter::Move(const FInputActionValue& Value)
 		if (Controller != nullptr)
 		{
 			const FRotator ControlRotation = Controller->GetControlRotation();
-            
+
 			// 카메라가 바라보는 방향으로 이동 벡터 계산
 			FVector CameraForward = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
 			FVector CameraRight = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y);
-            
+
 			// 이동 방향 계산 (전후/좌우 입력에 따라)
 			FVector MoveDirection = (CameraForward * MovementVector.Y) + (CameraRight * MovementVector.X);
-            
+
 			// 현재 위치 확인
 			FVector CurrentLocation = GetActorLocation();
 			bool bIsAtTop = CurrentLocation.Z >= 9600.0f;
-            
+
 			// 위쪽 제한 처리
 			if (bIsAtTop && MoveDirection.Z > 0)
 			{
@@ -138,7 +137,7 @@ void AMyProjectCharacter::Move(const FInputActionValue& Value)
 				MoveDirection.Z = 0;
 				MoveDirection.Normalize(); // 방향 벡터 정규화
 			}
-            
+
 			// 이동 적용
 			AddMovementInput(MoveDirection, 1.0f);
 		}
@@ -147,32 +146,55 @@ void AMyProjectCharacter::Move(const FInputActionValue& Value)
 	{
 		if (Controller != nullptr)
 		{
-			// find out which way is forward
+			// 카메라 기준 회전값
 			const FRotator Rotation = Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-			// get forward vector
+			// 앞/옆 벡터
 			const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-
-			// get right vector 
 			const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-			// add movement 
-			AddMovementInput(ForwardDirection, MovementVector.Y);
-			AddMovementInput(RightDirection, MovementVector.X);
+			// 입력 방향 계산
+			FVector MoveDirection = (ForwardDirection * MovementVector.Y) + (RightDirection * MovementVector.X);
+
+			if (!MoveDirection.IsNearlyZero())
+			{
+				MoveDirection.Normalize();
+
+				// 이동 적용
+				AddMovementInput(MoveDirection, 1.0f);
+
+				// 👉 카메라는 냅두고 캐릭터 모델만 회전
+				FRotator TargetRotation = MoveDirection.Rotation();
+				FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation,
+				                                        GetWorld()->GetDeltaSeconds(), 8.0f);
+				SetActorRotation(NewRotation);
+			}
 		}
 	}
 }
 
+
 void AMyProjectCharacter::Look(const FInputActionValue& Value)
 {
-	// input is a Vector2D
 	FVector2D LookAxisVector = Value.Get<FVector2D>();
 
 	if (Controller != nullptr)
 	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		float MouseSensitivity = 0.5f;
+		FRotator CurrentRotation = Controller->GetControlRotation();
+		float NewPitch = CurrentRotation.Pitch - (LookAxisVector.Y * MouseSensitivity);
+		NewPitch = FMath::Clamp(NewPitch, -75.0f, 75.0f);
+
+		float CharacterYaw = GetActorRotation().Yaw;
+
+		float NewYaw = CurrentRotation.Yaw + (LookAxisVector.X * MouseSensitivity);
+
+		float MinYaw = CharacterYaw - 50.0f;
+		float MaxYaw = CharacterYaw + 50.0f;
+		NewYaw = FMath::ClampAngle(NewYaw, MinYaw, MaxYaw);
+
+		FRotator NewRotation = FRotator(NewPitch, NewYaw, 0.0f);
+		Controller->SetControlRotation(NewRotation);
 	}
 }

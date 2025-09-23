@@ -63,6 +63,7 @@ protected:
 	
 	// To add mapping context
 	virtual void BeginPlay();
+	virtual void Tick(float DeltaTime) override;
 
 public:
 	/** Returns CameraBoom subobject **/
@@ -73,4 +74,21 @@ public:
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool isSwimming;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool isBreathing;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxHp;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentHp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxOxygen;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentOxygen;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OxygenDecrementRate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OxygenIncrementRate;
 };

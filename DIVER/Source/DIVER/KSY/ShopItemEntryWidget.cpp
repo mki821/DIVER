@@ -24,7 +24,8 @@ void UShopItemEntryWidget::Setup(const FShopItemData* ItemData)
 
 	if (ItemPriceText)
 	{
-		ItemPriceText->SetText(FText::AsNumber(MyItemData->Price));
+		FString TempString = FString::Printf(TEXT("Price : %d"), MyItemData->Price);
+		ItemPriceText->SetText(FText::FromString(TempString));
 	}
 
 	if (ActionButtonText)

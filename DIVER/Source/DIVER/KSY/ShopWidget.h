@@ -9,7 +9,7 @@
 
 class UButton;
 class UWidgetSwitcher;
-class UVerticalBox;
+class UScrollBox;
 class UDataTable;
 
 UCLASS()
@@ -37,9 +37,9 @@ protected:
 	UPROPERTY(meta = (BindWidget)) UButton* SellTabButton;
 
 	UPROPERTY(meta = (BindWidget)) UWidgetSwitcher* TabSwitcher;
-	UPROPERTY(meta = (BindWidget)) UVerticalBox* UpgradeList;
-	UPROPERTY(meta = (BindWidget)) UVerticalBox* BuyList;
-	UPROPERTY(meta = (BindWidget)) UVerticalBox* SellList;
+	UPROPERTY(meta = (BindWidget)) UScrollBox* UpgradeList;
+	UPROPERTY(meta = (BindWidget)) UScrollBox* BuyList;
+	UPROPERTY(meta = (BindWidget)) UScrollBox* SellList;
 
 private:
 	UFUNCTION() void OnUpgradeTabClicked();

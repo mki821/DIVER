@@ -1,7 +1,7 @@
 #include "KSY/ShopWidget.h"
 #include "Components/Button.h"
 #include "Components/WidgetSwitcher.h"
-#include "Components/VerticalBox.h"
+#include "Components/ScrollBox.h"
 #include "Engine/DataTable.h"
 #include "KSY/ShopItemData.h"
 #include "KSY/ShopItemEntryWidget.h"
@@ -45,11 +45,11 @@ void UShopWidget::PopulateShopLists()
 			
 			 	if (ItemData->ItemCategory == EItemCategory::Upgrade)
 			 	{
-			 		UpgradeList->AddChildToVerticalBox(Entry);
+					UpgradeList->AddChild(Entry);
 			 	}
 			 	else if (ItemData->ItemCategory == EItemCategory::Consumable)
 			 	{
-			 		BuyList->AddChildToVerticalBox(Entry);
+			 		BuyList->AddChild(Entry);
 			 	}
 			 }
 		}
@@ -77,7 +77,7 @@ void UShopWidget::PopulateSellList()
 	//			if(Entry)
 	//			{
 	//				Entry->Setup(FishData, Quantity);
-	//				SellList->AddChildToVerticalBox(Entry);
+	//				SellList->AddChild(Entry);
 	//			}
 	//      }
 	// }

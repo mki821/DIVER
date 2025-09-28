@@ -4,10 +4,14 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/Controller.h"
+#include "GameFramework/Controller.h"	
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputActionValue.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "Engine/OverlapResult.h"
+#include "Minki/Interface/DamageableInterface.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -78,6 +82,56 @@ void AMyProjectCharacter::Tick(float DeltaTime)
 	}
 }
 
+void AMyProjectCharacter::ShockwaveAttack()
+{
+	if (!bCanAttack) return;
+    
+	// 쿨다운 시작
+	bCanAttack = false;
+	GetWorldTimerManager().SetTimer(AttackCooldownTimer, this, &AMyProjectCharacter::ResetAttack, AttackCooldown);
+    
+	// 1. 나이아가라 이펙트 재생
+	if (ShockwaveEffect)
+	{
+		UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			GetWorld(),
+			ShockwaveEffect,
+			GetActorLocation(),
+			GetActorRotation()
+		);
+        
+		if (NiagaraComp)
+		{
+			NiagaraComp->SetNiagaraVariableFloat(FString("User.EffectScale"), AttackRange / 500.0f);
+		}
+	}
+
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(AttackRange);
+    
+	bool bHit = GetWorld()->OverlapMultiByChannel(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECC_GameTraceChannel1, 
+		Sphere
+	);
+    
+	for (const FOverlapResult& Result : OverlapResults)
+	{
+		AActor* HitActor = Result.GetActor();
+		if (IDamageableInterface* Damageable = Cast<IDamageableInterface>(HitActor))
+		{
+			Damageable->TakeDamage(AttackDamage);
+		}
+	}
+}
+
+void AMyProjectCharacter::ResetAttack()
+{
+	bCanAttack = true;
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -119,55 +173,51 @@ void AMyProjectCharacter::Move(const FInputActionValue& Value)
 		{
 			const FRotator ControlRotation = Controller->GetControlRotation();
 
-			// 카메라가 바라보는 방향으로 이동 벡터 계산
 			FVector CameraForward = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::X);
-			FVector CameraRight = FRotationMatrix(ControlRotation).GetUnitAxis(EAxis::Y);
 
-			// 이동 방향 계산 (전후/좌우 입력에 따라)
-			FVector MoveDirection = (CameraForward * MovementVector.Y) + (CameraRight * MovementVector.X);
-
-			// 현재 위치 확인
-			FVector CurrentLocation = GetActorLocation();
-			bool bIsAtTop = CurrentLocation.Z >= 9600.0f;
-
-			// 위쪽 제한 처리
-			if (bIsAtTop && MoveDirection.Z > 0)
+			float ForwardInput = MovementVector.Y; // W/S 입력 (Y축)
+			
+			if (ForwardInput > 0) // W키를 누를 때만
 			{
-				// 위로 이동하려는 경우 Z 성분 제거 (수평 이동만 허용)
-				MoveDirection.Z = 0;
-				MoveDirection.Normalize(); // 방향 벡터 정규화
-			}
+				FVector MoveDirection = CameraForward * ForwardInput;
 
-			// 이동 적용
-			AddMovementInput(MoveDirection, 1.0f);
+				FVector CurrentLocation = GetActorLocation();
+				bool bIsAtTop = CurrentLocation.Z >= 9600.0f;
+
+				if (bIsAtTop && MoveDirection.Z > 0)
+				{
+					MoveDirection.Z = 0;
+					if (!MoveDirection.IsNearlyZero())
+					{
+						MoveDirection.Normalize();
+					}
+				}
+
+				AddMovementInput(MoveDirection, 1.0f);
+			}
 		}
 	}
 	else
 	{
 		if (Controller != nullptr)
 		{
-			// 카메라 기준 회전값
 			const FRotator Rotation = Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-			// 앞/옆 벡터
+	
 			const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 			const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-			// 입력 방향 계산
+	
 			FVector MoveDirection = (ForwardDirection * MovementVector.Y) + (RightDirection * MovementVector.X);
-
+	
 			if (!MoveDirection.IsNearlyZero())
 			{
 				MoveDirection.Normalize();
-
-				// 이동 적용
+	
 				AddMovementInput(MoveDirection, 1.0f);
-
-				// 👉 카메라는 냅두고 캐릭터 모델만 회전
+	
 				FRotator TargetRotation = MoveDirection.Rotation();
 				FRotator NewRotation = FMath::RInterpTo(GetActorRotation(), TargetRotation,
-				                                        GetWorld()->GetDeltaSeconds(), 8.0f);
+														GetWorld()->GetDeltaSeconds(), 8.0f);
 				SetActorRotation(NewRotation);
 			}
 		}

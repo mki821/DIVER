@@ -91,5 +91,26 @@ public:
 	float OxygenDecrementRate;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float OxygenIncrementRate;
+public:
+	// 공격 관련
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	class UNiagaraSystem* ShockwaveEffect;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float AttackRange = 100.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float AttackDamage = 30.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Attack")
+	float AttackCooldown = 3.0f;
+
+	UFUNCTION(BlueprintCallable)
+	void ShockwaveAttack();
+
+private:
+	bool bCanAttack = true;
+	FTimerHandle AttackCooldownTimer;
+    
+	void ResetAttack();
 };

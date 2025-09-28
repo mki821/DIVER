@@ -17,7 +17,8 @@ public class DIVER : ModuleRules
 			"InputCore", 
 			"EnhancedInput",
 			"UMG",
-			"AIModule"
+			"AIModule",
+			"Niagara" 
 		});
 	}
 }
